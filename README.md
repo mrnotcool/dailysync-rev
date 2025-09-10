@@ -282,7 +282,27 @@ tail -100f /var/log/dailysync.log
 
 账号及密码保存在自己的 `github secrets` 中，不会泄露，运行代码均 **开放源码**，欢迎提交`PR`。
 
+#### 备注
+
+您遇到的问题是，尽管您手动运行了 "Sync Garmin CN to Garmin Global" 这个 GitHub Actions workflow，但它仍然提示“This workflow will be disabled soon because there’s no recent activity in the repository.”（此工作流将很快被禁用，因为存储库中没有最近的活动。）
+
+这通常不是因为您没有运行工作流，而是因为 **GitHub Actions 对“活动”的定义可能更侧重于存储库本身的代码提交、分支推送、拉取请求等代码相关的活动，而不是仅仅工作流的运行。**
+
+GitHub Actions 通常会定期清理或禁用长时间没有代码相关活动的存储库中的工作流，以节省资源。即使您手动触发了 `workflow_dispatch` 事件（如您截图中所示），如果相应的代码库（repository）在很长一段时间内没有新的代码提交、分支修改等，GitHub 可能会认为这个仓库是“不活跃”的。
+
+**解决方法：**
+
+1.  **点击 "Continue running workflow"：** 您可以看到警告旁边有一个 "Continue running workflow" 按钮。点击它通常会延长工作流的活跃期，让它不被禁用。这通常是临时的解决方案。
+
+2.  **在存储库中进行代码提交：** 最根本的解决方法是在您的存储库中进行一些代码提交。即使是微小的修改，例如更新 `README.md` 文件，或者向工作流文件 `sync_garmin_cn_to_garmin_global.yml` 中添加一个注释，然后将其推送到 `main` 分支，都会被 GitHub 视为存储库的“活动”。这会重置 GitHub 对该存储库活跃度的计时器。
+
+3.  **检查 Workflow 配置中的触发器 (Triggers)：**
+    虽然您正在手动运行，但如果工作流除了 `workflow_dispatch` 之外，还配置了 `schedule`（定时触发）来自动运行，并且这个 `schedule` 也在正常运行，那么就不太容易被禁用。
+    您的截图显示 "This workflow has a `workflow_dispatch` event trigger."，这意味着它可以被手动触发。如果它也包含 `schedule` 触发器，确保它已正确配置并能够按计划运行。
+
+所以，最可靠和推荐的方法是在存储库中进行一些代码提交，以表明该存储库仍然在使用中。
+
 #### 进群讨论
 
-为方便讨论，请加我绿色软件：nononopass （下面扫码）我拉你进群。`nononopass`  我拉你进群。
+为方便讨论，请加原作者绿色软件：nononopass （下面扫码）我拉你进群。`nononopass`  我拉你进群。
 ![二维码扫码](./assets/wechat_qr.png)
